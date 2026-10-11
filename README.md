@@ -3,7 +3,7 @@
 > **AWS Sustainability Hackathon — Waste & Energy Track**  
 > An autonomous, AI-assisted operations platform for electric delivery depots that continuously balances grid carbon intensity, electricity tariffs, and physical transformer constraints while guaranteeing 100% on-time departure at required State of Charge (SOC).
 
-### Team: HMSH4K
+### Team: AWSsome Builds
 - **Riddhima (Member 1)**: Mathematical Optimization & Operations Research Lead (OR-Tools CP-SAT, Heuristics, Safety Validator)
 - **Roopanshu (Member 2)**: Backend Systems & Agentic AI Orchestration Lead (FastAPI, Simulation Engine, Bedrock Agent)
 - **Sarthak Verma (Team Lead & Member 3)**: Cloud Architecture & DevOps / Infrastructure Lead (AWS CDK, DynamoDB, EventBridge, CloudWatch)
