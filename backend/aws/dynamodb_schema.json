@@ -1,0 +1,43 @@
+{
+  "Tables": [
+    {
+      "TableName": "EVDepotFleetState",
+      "KeySchema": [
+        { "AttributeName": "DepotId", "KeyType": "HASH" },
+        { "AttributeName": "VehicleId", "KeyType": "RANGE" }
+      ],
+      "AttributeDefinitions": [
+        { "AttributeName": "DepotId", "AttributeType": "S" },
+        { "AttributeName": "VehicleId", "AttributeType": "S" }
+      ],
+      "BillingMode": "PAY_PER_REQUEST",
+      "Description": "Stores current telemetry, battery capacity, arrival/departure deadlines, and required SOC for all fleet EVs."
+    },
+    {
+      "TableName": "EVDepotChargerState",
+      "KeySchema": [
+        { "AttributeName": "DepotId", "KeyType": "HASH" },
+        { "AttributeName": "ChargerId", "KeyType": "RANGE" }
+      ],
+      "AttributeDefinitions": [
+        { "AttributeName": "DepotId", "AttributeType": "S" },
+        { "AttributeName": "ChargerId", "AttributeType": "S" }
+      ],
+      "BillingMode": "PAY_PER_REQUEST",
+      "Description": "Maintains physical charger health, maximum power ratings (50 kW), and fault intervals."
+    },
+    {
+      "TableName": "EVDepotActiveSchedules",
+      "KeySchema": [
+        { "AttributeName": "DepotId", "KeyType": "HASH" },
+        { "AttributeName": "ScheduleId", "KeyType": "RANGE" }
+      ],
+      "AttributeDefinitions": [
+        { "AttributeName": "DepotId", "AttributeType": "S" },
+        { "AttributeName": "ScheduleId", "AttributeType": "S" }
+      ],
+      "BillingMode": "PAY_PER_REQUEST",
+      "Description": "Historical and active 96-interval dispatch schedules, operator approvals, and validated metrics."
+    }
+  ]
+}
