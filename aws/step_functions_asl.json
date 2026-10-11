@@ -1,0 +1,170 @@
+{
+  "Comment": "AWS Step Functions state machine for Carbon-Aware EV Depot Orchestrator closed-loop workflow: Observe -> Reason -> Optimize -> Validate -> HITL Approve -> Execute -> Monitor.",
+  "StartAt": "AssessDisruptionImpact",
+  "States": {
+    "AssessDisruptionImpact": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "arn:aws:lambda:us-east-1:123456789012:function:EVDepotAssessImpact",
+        "Payload": {
+          "event.$": "$.detail",
+          "depotId.$": "$.detail.depotId"
+        }
+      },
+      "ResultPath": "$.impactAssessment",
+      "Next": "InvokeBedrockAgentReasoning"
+    },
+    "InvokeBedrockAgentReasoning": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::bedrock:invokeModel",
+      "Parameters": {
+        "ModelId": "anthropic.claude-3-5-sonnet-20241022-v2:0",
+        "Body": {
+          "anthropic_version": "bedrock-2023-05-31",
+          "max_tokens": 500,
+          "messages": [
+            {
+              "role": "user",
+              "content.$": "States.Format('A fleet disruption occurred at depot {}: {}. Formulate optimization parameters and identify affected routes.', $.detail.depotId, $.impactAssessment.Payload.summary)"
+            }
+          ]
+        }
+      },
+      "ResultPath": "$.agentReasoning",
+      "Next": "RunOrToolsSolver"
+    },
+    "RunOrToolsSolver": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "arn:aws:lambda:us-east-1:123456789012:function:EVDepotOrToolsSolver",
+        "Payload": {
+          "depotId.$": "$.detail.depotId",
+          "disabledChargers.$": "$.impactAssessment.Payload.disabledChargers",
+          "fleetOverrides.$": "$.impactAssessment.Payload.fleetOverrides"
+        }
+      },
+      "ResultPath": "$.solverOutput",
+      "Next": "DeterministicConstraintValidator"
+    },
+    "DeterministicConstraintValidator": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "arn:aws:lambda:us-east-1:123456789012:function:EVDepotConstraintValidator",
+        "Payload": {
+          "schedule.$": "$.solverOutput.Payload.schedule",
+          "transformerLimitKW": 250,
+          "fleetSize": 40
+        }
+      },
+      "ResultPath": "$.validationResult",
+      "Next": "IsScheduleValid"
+    },
+    "IsScheduleValid": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.validationResult.Payload.isValid",
+          "BooleanEquals": true,
+          "Next": "WaitForOperatorApproval"
+        }
+      ],
+      "Default": "TriggerInfeasibilityAlert"
+    },
+    "WaitForOperatorApproval": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sqs:sendMessage.waitForTaskToken",
+      "Parameters": {
+        "QueueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/EVDepotOperatorApprovalQueue",
+        "MessageBody": {
+          "taskToken.$": "$$.Task.Token",
+          "scheduleId.$": "$.solverOutput.Payload.schedule.schedule_id",
+          "agentExplanation.$": "$.agentReasoning.Body.content[0].text",
+          "metrics.$": "$.validationResult.Payload.metrics"
+        }
+      },
+      "TimeoutSeconds": 900,
+      "ResultPath": "$.approvalResult",
+      "Next": "CheckApprovalStatus"
+    },
+    "CheckApprovalStatus": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.approvalResult.action",
+          "StringEquals": "APPROVED",
+          "Next": "CommitScheduleToDynamoDB"
+        }
+      ],
+      "Default": "DiscardProposal"
+    },
+    "CommitScheduleToDynamoDB": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:putItem",
+      "Parameters": {
+        "TableName": "EVDepotActiveSchedules",
+        "Item": {
+          "DepotId": { "S": "DEPOT_BLR_01" },
+          "ScheduleId": { "S.$": "$.solverOutput.Payload.schedule.schedule_id" },
+          "Status": { "S": "ACTIVE" },
+          "Timestamp": { "S.$": "$$.Execution.StartTime" }
+        }
+      },
+      "ResultPath": "$.ddbWrite",
+      "Next": "PublishDispatchIoTCommand"
+    },
+    "PublishDispatchIoTCommand": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:iotdata:publish",
+      "Parameters": {
+        "Topic": "depot/blr-01/chargers/schedule/apply",
+        "Payload": {
+          "scheduleId.$": "$.solverOutput.Payload.schedule.schedule_id"
+        }
+      },
+      "ResultPath": "$.iotDispatch",
+      "Next": "PublishCloudWatchMetrics"
+    },
+    "PublishCloudWatchMetrics": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:cloudwatch:putMetricData",
+      "Parameters": {
+        "Namespace": "EVDepot/Orchestration",
+        "MetricData": [
+          {
+            "MetricName": "CarbonAvoidedKg",
+            "Value.$": "$.solverOutput.Payload.metrics.carbon_avoided_kg",
+            "Unit": "None"
+          },
+          {
+            "MetricName": "CostSavedRupees",
+            "Value.$": "$.solverOutput.Payload.metrics.cost_saved",
+            "Unit": "None"
+          },
+          {
+            "MetricName": "PeakPowerKW",
+            "Value.$": "$.solverOutput.Payload.metrics.optimized_peak_kw",
+            "Unit": "Kilowatts"
+          }
+        ]
+      },
+      "End": true
+    },
+    "TriggerInfeasibilityAlert": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "arn:aws:sns:us-east-1:123456789012:EVDepotOperationsAlerts",
+        "Message.$": "States.Format('CRITICAL: Proposed schedule failed deterministic validation. Reason: {}', $.validationResult.Payload.summary)"
+      },
+      "Fail": true
+    },
+    "DiscardProposal": {
+      "Type": "Pass",
+      "Result": "Operator rejected proposal. Maintaining previous schedule.",
+      "End": true
+    }
+  }
+}

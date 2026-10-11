@@ -1,0 +1,88 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "EV Depot Orchestrator Bedrock Agent Tools",
+    "version": "1.0.0",
+    "description": "Action Group API specification for Amazon Bedrock Agent to interact with deterministic solver and validator."
+  },
+  "paths": {
+    "/getDepotTelemetry": {
+      "get": {
+        "summary": "Retrieve live fleet, charger, and transformer telemetry",
+        "description": "Returns current battery SOC for all 40 vehicles, operational status of all 10 chargers, and active transformer load.",
+        "operationId": "getDepotTelemetry",
+        "parameters": [
+          {
+            "name": "depotId",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Depot telemetry snapshot"
+          }
+        }
+      }
+    },
+    "/solveOptimalSchedule": {
+      "post": {
+        "summary": "Invoke Google OR-Tools CP-SAT mathematical optimization",
+        "description": "Solves multi-objective schedule minimizing cost and carbon while strictly honoring transformer power limits.",
+        "operationId": "solveOptimalSchedule",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "depotId": { "type": "string" },
+                  "disabledChargers": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  },
+                  "weightCost": { "type": "number", "default": 1.0 },
+                  "weightCarbon": { "type": "number", "default": 2.5 }
+                },
+                "required": ["depotId"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Optimal 96-interval charging schedule"
+          }
+        }
+      }
+    },
+    "/validateSchedule": {
+      "post": {
+        "summary": "Run independent deterministic safety and constraint verification",
+        "description": "Formally certifies zero transformer overloads, charger conflicts, or missed morning departure deadlines.",
+        "operationId": "validateSchedule",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "scheduleId": { "type": "string" }
+                },
+                "required": ["scheduleId"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Validation result with pass/fail and slack headroom analysis"
+          }
+        }
+      }
+    }
+  }
+}
