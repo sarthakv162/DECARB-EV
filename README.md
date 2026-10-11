@@ -1,13 +1,13 @@
 # Carbon-Aware EV Depot Orchestrator & Utility Sizer
 ### Autonomous Operations, Grid Sizing & Disruption Recovery for Electric Commercial Fleets
 
-[![AWS Sustainability Hackathon](https://img.shields.io/badge/AWS_Hackathon-Waste_%26_Energy_Track_03-FF9900?logo=amazon-aws&logoColor=white)](https://aws.amazon.com/)
-[![Team](https://img.shields.io/badge/Team-AWSome_Builds-232F3E?logo=amazon&logoColor=white)](https://github.com/sarthakv162/DECARB-EV)
-[![Team Code](https://img.shields.io/badge/Team_Code-HMSH4K-0066FF)](https://github.com/sarthakv162/DECARB-EV)
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
-[![React](https://img.shields.io/badge/Frontend-React_19_%2B_Vite-61DAFB?logo=react&logoColor=black)](https://react.dev/)
-[![AWS CDK](https://img.shields.io/badge/IaC-AWS_CDK_v2_(Python)-CC2264?logo=amazon-aws&logoColor=white)](https://aws.amazon.com/cdk/)
-[![Amazon Bedrock](https://img.shields.io/badge/GenAI-Claude_3.5_Sonnet-6B46C1?logo=anthropic&logoColor=white)](https://aws.amazon.com/bedrock/)
+[![AWS Sustainability Hackathon](https://img.shields.io/badge/AWS%20Hackathon-Track%2003-FF9900?logo=amazon&logoColor=white)](https://aws.amazon.com/)
+[![Team](https://img.shields.io/badge/Team-AWSome%20Builds-232F3E?logo=amazon&logoColor=white)](https://github.com/sarthakv162/DECARB-EV)
+[![Team Code](https://img.shields.io/badge/Team%20Code-HMSH4K-0066FF)](https://github.com/sarthakv162/DECARB-EV)
+[![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![React](https://img.shields.io/badge/Frontend-React%2019-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![AWS CDK](https://img.shields.io/badge/IaC-AWS%20CDK%20v2-CC2264?logo=amazonaws&logoColor=white)](https://aws.amazon.com/cdk/)
+[![Amazon Bedrock](https://img.shields.io/badge/AI-Claude%203.5%20Sonnet-6B46C1?logo=anthropic&logoColor=white)](https://aws.amazon.com/bedrock/)
 
 > **AWS Sustainability Hackathon — Waste & Energy Track (Track 03)**  
 > **Live Production Deployment:** [http://100.56.128.36/](http://100.56.128.36/)  
