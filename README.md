@@ -18,12 +18,12 @@
 
 ## 👥 Team AWSome Builds (Team Code: HMSH4K)
 
-| Member | Role | Core Technical Ownership |
-| :--- | :--- | :--- |
-| **Sarthak Verma** | **Team Lead & Cloud Architecture Lead** (Member 3) | AWS CDK (Python), DynamoDB Tables, EventBridge Custom Bus, CloudWatch Dashboards & Overload Alarms, Boto3 SDK, EC2 Systemd Automation. |
-| **Riddhima** | **Mathematical Optimization & Operations Research Lead** (Member 1) | Google OR-Tools CP-SAT Multi-Objective Solver, Earliest Deadline First (EDF) Heuristic with Bay Swaps, Deterministic Safety Validator, 60-Night Sizing Oracle Benchmark. |
-| **Roopanshu** | **Backend Systems & Agentic AI Orchestration Lead** (Member 2) | FastAPI REST API, Real-Time Digital Twin Depot Simulator, Amazon Bedrock Agent (Claude 3.5 Sonnet) Integration, Human-in-the-Loop (HITL) Gating, Baseline vs. Green Metrics Engine. |
-| **Taksh** | **Fleet Operations UI/UX & Frontend Lead** (Member 4) | React 19 + TypeScript Mission Control Dashboard, Real-Time Site Load & Carbon Canvas Scrubber, 40-Vehicle Gantt Dispatch Matrix, Technical Specifications & Documentation. |
+| Member | GitHub Profile | Role | Core Technical Ownership |
+| :--- | :--- | :--- | :--- |
+| **Sarthak Verma** | [@sarthakv162](https://github.com/sarthakv162) | **Team Lead & Cloud Architecture Lead** (Member 3) | AWS CDK (Python), DynamoDB Tables, EventBridge Custom Bus, CloudWatch Dashboards & Overload Alarms, Boto3 SDK, EC2 Systemd Automation. |
+| **Riddhima** | [@riddhimaSD](https://github.com/riddhimaSD) | **Mathematical Optimization & Operations Research Lead** (Member 1) | Google OR-Tools CP-SAT Multi-Objective Solver, Earliest Deadline First (EDF) Heuristic with Bay Swaps, Deterministic Safety Validator, 60-Night Sizing Oracle Benchmark. |
+| **Roopanshu** | [@RoopanshuSD](https://github.com/RoopanshuSD) | **Backend Systems & Agentic AI Orchestration Lead** (Member 2) | FastAPI REST API, Real-Time Digital Twin Depot Simulator, Amazon Bedrock Agent (Claude 3.5 Sonnet) Integration, Human-in-the-Loop (HITL) Gating, Baseline vs. Green Metrics Engine. |
+| **Taksh** | [@TAKSH-PAL](https://github.com/TAKSH-PAL) | **Fleet Operations UI/UX & Frontend Lead** (Member 4) | React 19 + TypeScript Mission Control Dashboard, Real-Time Site Load & Carbon Canvas Scrubber, 40-Vehicle Gantt Dispatch Matrix, Technical Specifications & Documentation. |
 
 ---
 
